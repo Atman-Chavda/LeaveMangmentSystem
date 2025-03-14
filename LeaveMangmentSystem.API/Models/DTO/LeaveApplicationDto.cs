@@ -5,7 +5,7 @@
         public long EmpId { get; set; }
         public DateTime? DateApplication { get; set; }
 
-        public long LeaveType { get; set; }
+        public string LeaveType { get; set; }
 
         public double? TotalDays { get; set; }
 

@@ -13,12 +13,25 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowSpecificOrigins", policy =>
+    {
+        policy.WithOrigins("http://localhost:4200")
+              .AllowAnyHeader()
+              .AllowAnyMethod();
+    });
+});
+
 builder.Services.AddDbContext<LeaveAppDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("LASDbConnectionString")));
 builder.Services.AddAutoMapper(typeof(AutoMapperProfiles));
+
 
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
+app.UseCors("AllowSpecificOrigins");
+
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();

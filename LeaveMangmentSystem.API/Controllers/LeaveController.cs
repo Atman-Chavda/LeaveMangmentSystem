@@ -25,7 +25,7 @@ namespace LeaveMangmentSystem.API.Controllers
         {
             try
             {
-                var leaves = await context.LeaveApplications.ToListAsync();
+                var leaves = await context.LeaveApplications.Include(l => l.LeaveTypeNavigation).ToListAsync();
 
                 var leavesDto = mapper.Map<List<LeaveApplicationDto>>(leaves);
                 return Ok(leavesDto);
@@ -42,7 +42,7 @@ namespace LeaveMangmentSystem.API.Controllers
         {
             try 
             {
-                var leave = await context.LeaveApplications.FirstOrDefaultAsync(x => x.LeaveId == id);
+                var leave = await context.LeaveApplications.Include(l => l.LeaveTypeNavigation).FirstOrDefaultAsync(x => x.LeaveId == id);
                 if(leave == null)
                 {
                     return BadRequest("Leave not found");
@@ -182,6 +182,23 @@ namespace LeaveMangmentSystem.API.Controllers
                 return BadRequest(ex.Message);
             }
             
+        }
+        [HttpGet]
+        [Route("getempleaves/{empId:long}")]
+        public async Task<IActionResult> GetByEmpId([FromRoute] long empId)
+        {
+            try
+            {
+                var empLeaves = await context.LeaveApplications.Where(l => l.EmpId==empId).Include(l=>l.LeaveTypeNavigation).ToListAsync();
+                
+                var showLeave = mapper.Map<List<LeaveApplicationDto>>(empLeaves);
+                
+                return Ok(showLeave);
+            }
+            catch(Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
     }
 }

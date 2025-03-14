@@ -33,11 +33,13 @@ namespace LeaveMangmentSystem.API.Controllers
                 {
                     return BadRequest("leave not found");
                 }
-                leave.LeaveStatus = updateLeaveStatusDto.UpdateStatus;
+                
                 leave.ApproveRemark = updateLeaveStatusDto.Remarks;
                 await context.SaveChangesAsync();
                 if (updateLeaveStatusDto.UpdateStatus == "approve")
                 {
+                    leave.LeaveStatus = "Approved";
+                    await context.SaveChangesAsync();
                     var balance = await context.Balances.FirstOrDefaultAsync(x => x.EmpId == leave.EmpId);
                     if (balance == null)
                     {
@@ -56,6 +58,11 @@ namespace LeaveMangmentSystem.API.Controllers
 
                     await context.SaveChangesAsync();
 
+                }
+                else if (updateLeaveStatusDto.UpdateStatus == "reject")
+                {
+                    leave.LeaveStatus = "Rejected";
+                    await context.SaveChangesAsync();
                 }
                 return Ok("leave status updated");
 

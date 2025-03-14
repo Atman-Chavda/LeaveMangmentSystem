@@ -8,7 +8,8 @@ namespace LAS.API.Mapper
     {
         public AutoMapperProfiles()
         {
-            CreateMap<LeaveApplication, LeaveApplicationDto>().ReverseMap();
+            CreateMap<LeaveApplication, LeaveApplicationDto>()
+            .ForMember(dest => dest.LeaveType, opt => opt.MapFrom(src => src.LeaveTypeNavigation.LookupShortName));
             CreateMap<AddLeaveRequestDto, LeaveApplication>().ReverseMap();
             CreateMap<WFHDto, WfhOof>().ReverseMap();
             CreateMap<WfhOof,AddWFHRequestDto>().ReverseMap();
